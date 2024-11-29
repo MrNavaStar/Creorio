@@ -1,0 +1,3 @@
+# Use comments to disable any blocks you don't want to be able to chunk load
+
+minecraft:piston

@@ -1,0 +1,4 @@
+# Use comments to disable any blocks you don't want to be able to chunk load
+
+# This covers all cases for extended cogwheels without overlapping blocks we don't want to chunk load
+extendedgears:block

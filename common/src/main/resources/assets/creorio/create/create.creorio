@@ -1,3 +1,5 @@
+# Use comments to disable any blocks you don't want to be able to chunk load
+
 create:block/adjustable_chain_gearshift
 create:block/andesite_belt_funnel
 create:block/andesite_encased_cogwheel

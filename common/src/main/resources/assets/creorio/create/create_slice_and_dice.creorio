@@ -1,0 +1,4 @@
+# Use comments to disable any blocks you don't want to be able to chunk load
+
+sliceanddice:block/slicer
+sliceanddice:block/sprinkler

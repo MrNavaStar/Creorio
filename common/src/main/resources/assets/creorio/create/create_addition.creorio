@@ -1,3 +1,5 @@
+# Use comments to disable any blocks you don't want to be able to chunk load
+
 createaddition:block/accumulator
 createaddition:block/alternator
 createaddition:block/connector
