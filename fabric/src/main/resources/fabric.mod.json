@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "creorio",
+  "version": "${version}",
+  "name": "Creorio",
+  "description": "This is an example description! Tell everyone what your mod is about!",
+  "authors": [
+    "MrNavaStar"
+  ],
+  "license": "CC0-1.0",
+  "icon": "assets/creorio/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "me.mrnavastar.fabric.Fabric"
+    ]
+  },
+  "depends": {
+    "minecraft": ">=1.20.1",
+    "architectury": ">=9.2.14"
+  }
+}
