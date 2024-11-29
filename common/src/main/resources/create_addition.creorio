@@ -1,0 +1,10 @@
+createaddition:block/accumulator
+createaddition:block/alternator
+createaddition:block/connector
+createaddition:block/digital_adapter
+createaddition:block/electric_motor
+createaddition:block/modular_accumulator
+createaddition:block/portable_energy_interface
+createaddition:block/redstone_relay
+createaddition:block/rolling_mill
+createaddition:block/tesla_coil

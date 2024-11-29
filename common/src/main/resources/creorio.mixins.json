@@ -1,11 +1,12 @@
 {
   "required": true,
-  "package": "me.mrnavastar.mixin",
-  "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8",
-  "client": [
-  ],
+  "package": "me.mrnavastar.creorio.mixin",
+  "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "ChunkTicketManagerMixin",
+    "ServerWorldMixin",
+    "ThreadedAnvilChunkStorageMixin"
   ],
   "injectors": {
     "defaultRequire": 1
