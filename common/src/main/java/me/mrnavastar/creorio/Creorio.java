@@ -3,36 +3,38 @@ package me.mrnavastar.creorio;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.BlockEvent;
 import dev.architectury.event.events.common.ChunkEvent;
+import dev.architectury.event.events.common.LifecycleEvent;
 import dev.architectury.event.events.common.TickEvent;
 import me.mrnavastar.creorio.access.IChunkTicketManager;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ChunkTicketType;
 import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.World;
+import net.minecraft.world.ForcedChunkState;
 import net.minecraft.world.chunk.Chunk;
+import oshi.annotation.concurrent.NotThreadSafe;
+import oshi.annotation.concurrent.ThreadSafe;
 
-import java.util.Optional;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 public final class Creorio {
 
-    private record ChunkChange(RegistryKey<World> world, ChunkPos pos, Boolean state) {
+    private record ChunkChange(ServerWorld world, ChunkPos pos, Boolean state) {
 
-        public void apply(MinecraftServer server) {
-            Optional.ofNullable(server.getWorld(world)).ifPresent(w -> {
-                ServerChunkManager manager = w.getChunkManager();
-                if (state) manager.addTicket(TICKET, pos, 1, pos);
-                else if (((IChunkTicketManager) manager.threadedAnvilChunkStorage.getTicketManager()).creorio$isLoadedByCreorio(pos.toLong()))
-                    manager.removeTicket(TICKET, pos, 1, pos);
-            });
+        @NotThreadSafe
+        public void apply() {
+            ServerChunkManager manager = world.getChunkManager();
+            ForcedChunkState storage = getCreorioStorage(world);
+            if (state) {
+                manager.addTicket(TICKET, pos, 1, pos);
+                if (storage.getChunks().add(pos.toLong())) storage.markDirty();
+            }
+            else if (((IChunkTicketManager) manager.threadedAnvilChunkStorage.getTicketManager()).creorio$isLoadedByCreorio(pos.toLong())){
+                manager.removeTicket(TICKET, pos, 1, pos);
+                if (storage.getChunks().remove(pos.toLong())) storage.markDirty();
+            }
         }
     }
 
@@ -40,23 +42,24 @@ public final class Creorio {
     private static final ExecutorService exec = Executors.newVirtualThreadPerTaskExecutor();
     private static final ConcurrentLinkedQueue<ChunkChange> chunkChanges = new ConcurrentLinkedQueue<>();
 
-    private static void setForced(World world, ChunkPos pos, boolean state) {
-        chunkChanges.add(new ChunkChange(world.getRegistryKey(), pos, state));
+    @NotThreadSafe
+    private static ForcedChunkState getCreorioStorage(ServerWorld world) {
+        return world.getPersistentStateManager().getOrCreate(ForcedChunkState::fromNbt, ForcedChunkState::new, "creorio");
     }
 
-    private static void scan(Chunk chunk, ServerWorld world, NbtCompound nbt) {
-        if (world == null) return;
+    @ThreadSafe
+    private static void setForced(ServerWorld world, ChunkPos pos, boolean state) {
+        chunkChanges.add(new ChunkChange(world, pos, state));
+    }
+
+    @ThreadSafe
+    private static void purge(Chunk chunk, ServerWorld world, NbtCompound nbt) {
         exec.submit(() -> {
             // Scan chunk data for any whitelisted blocks, return early if one is found
-            for (NbtElement section : nbt.getList("sections", NbtElement.COMPOUND_TYPE)) {
-                NbtList palette = ((NbtCompound) section).getCompound("block_states").getList("palette", NbtElement.COMPOUND_TYPE);
-                for (NbtElement block : palette) {
-                    if (Config.isWhitelisted(((NbtCompound) block).getString("Name"))) {
-                        setForced(world, chunk.getPos(), true);
-                        return;
-                    }
-                }
-            }
+            for (NbtElement section : nbt.getList("sections", NbtElement.COMPOUND_TYPE))
+                for (NbtElement block : ((NbtCompound) section).getCompound("block_states").getList("palette", NbtElement.COMPOUND_TYPE))
+                    if (Config.isWhitelisted(((NbtCompound) block).getString("Name"))) return;
+
             setForced(world, chunk.getPos(), false);
         });
     }
@@ -67,21 +70,21 @@ public final class Creorio {
         // TODO: Check if this event fires twice on a server like it does on a client
         // Load all chunks with whitelisted blocks placed in them
         BlockEvent.PLACE.register((world, blockPos, blockState, entity) -> {
-            exec.submit(() -> {
+            if (world instanceof ServerWorld serverWorld) exec.submit(() -> {
                 String state = blockState.getRegistryEntry().getKey().get().getValue().toString();
-                if (Config.isWhitelisted(state)) setForced(world, new ChunkPos(blockPos), true);
+                if (Config.isWhitelisted(state)) setForced(serverWorld, new ChunkPos(blockPos), true);
             });
             return EventResult.pass();
         });
 
         // Purge any force loaded chunks that no longer have whitelist blocks inside them
-        ChunkEvent.SAVE_DATA.register(Creorio::scan);
+        ChunkEvent.SAVE_DATA.register(Creorio::purge);
         // Load all the chunks that have whitelisted blocks in them
-        ChunkEvent.LOAD_DATA.register(Creorio::scan);
+        LifecycleEvent.SERVER_LEVEL_LOAD.register(world -> getCreorioStorage(world).getChunks().forEach(pos -> setForced(world, new ChunkPos(pos), true)));
 
         // Apply forced loaded chunk modifications on main thread to keep things safe
         TickEvent.SERVER_PRE.register(server -> {
-            while (!chunkChanges.isEmpty()) chunkChanges.remove().apply(server);
+            while (!chunkChanges.isEmpty()) chunkChanges.remove().apply();
         });
     }
 }
