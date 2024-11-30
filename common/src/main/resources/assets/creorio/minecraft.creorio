@@ -1,3 +1,12 @@
 # Use comments to disable any blocks you don't want to be able to chunk load
 
 minecraft:piston
+minecraft:sticky_piston
+minecraft:observer
+minecraft:comparator
+minecraft:repeater
+minecraft:redstone_dust
+minecraft:hopper
+minecraft:dispenser
+minecraft:dropper
+minecraft:redstone_torch
