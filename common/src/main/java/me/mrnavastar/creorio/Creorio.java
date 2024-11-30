@@ -28,11 +28,11 @@ public final class Creorio {
             ServerChunkManager manager = world.getChunkManager();
             ForcedChunkState storage = getCreorioStorage(world);
             if (state) {
-                manager.addTicket(TICKET, pos, 1, pos);
+                manager.addTicket(TICKET, pos, 2, pos);
                 if (storage.getChunks().add(pos.toLong())) storage.markDirty();
             }
             else if (((IChunkTicketManager) manager.threadedAnvilChunkStorage.getTicketManager()).creorio$isLoadedByCreorio(pos.toLong())){
-                manager.removeTicket(TICKET, pos, 1, pos);
+                manager.removeTicket(TICKET, pos, 2, pos);
                 if (storage.getChunks().remove(pos.toLong())) storage.markDirty();
             }
         }

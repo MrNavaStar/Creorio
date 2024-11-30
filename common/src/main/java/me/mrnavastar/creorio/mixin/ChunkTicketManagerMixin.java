@@ -25,17 +25,4 @@ public class ChunkTicketManagerMixin implements IChunkTicketManager {
                         .anyMatch(ticket -> ticket.getType().equals(Creorio.TICKET)))
                 .orElse(false);
     }
-
-    //TODO: Check if these mixins are needed or not
-    /*@ModifyReturnValue(method = "shouldTickEntities", at = @At("RETURN"))
-    private boolean shouldTickEntities(boolean original, @Local(argsOnly = true) long pos) {
-        if (original) return true;
-        return creorio$isLoadedByCreorio(pos);
-    }
-
-    @ModifyReturnValue(method = "shouldTickBlocks", at = @At("RETURN"))
-    private boolean shouldTickBlocks(boolean original, @Local(argsOnly = true) long pos) {
-        if (original) return true;
-        return creorio$isLoadedByCreorio(pos);
-    }*/
 }
