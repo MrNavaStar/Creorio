@@ -1,10 +1,7 @@
 package me.mrnavastar.creorio;
 
 import dev.architectury.event.EventResult;
-import dev.architectury.event.events.common.BlockEvent;
-import dev.architectury.event.events.common.ChunkEvent;
-import dev.architectury.event.events.common.LifecycleEvent;
-import dev.architectury.event.events.common.TickEvent;
+import dev.architectury.event.events.common.*;
 import me.mrnavastar.creorio.access.IChunkTicketManager;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
@@ -43,7 +40,7 @@ public final class Creorio {
     private static final ConcurrentLinkedQueue<ChunkChange> chunkChanges = new ConcurrentLinkedQueue<>();
 
     @NotThreadSafe
-    private static ForcedChunkState getCreorioStorage(ServerWorld world) {
+    public static ForcedChunkState getCreorioStorage(ServerWorld world) {
         return world.getPersistentStateManager().getOrCreate(ForcedChunkState::fromNbt, ForcedChunkState::new, "creorio");
     }
 
@@ -66,6 +63,7 @@ public final class Creorio {
 
     public static void init() {
         Config.load();
+        CommandRegistrationEvent.EVENT.register(CreorioCommand::init);
 
         // TODO: Check if this event fires twice on a server like it does on a client
         // Load all chunks with whitelisted blocks placed in them
