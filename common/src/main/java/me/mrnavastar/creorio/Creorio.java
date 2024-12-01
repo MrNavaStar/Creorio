@@ -70,7 +70,6 @@ public final class Creorio {
         BlockEvent.PLACE.register((world, blockPos, blockState, entity) -> {
             if (world instanceof ServerWorld serverWorld) exec.submit(() -> {
                 String state = blockState.getRegistryEntry().getKey().get().getValue().toString();
-                System.out.println(state);
                 if (Config.isWhitelisted(state)) setForced(serverWorld, new ChunkPos(blockPos), true);
             });
             return EventResult.pass();
