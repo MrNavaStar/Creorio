@@ -1,12 +1,12 @@
 # Use comments to disable any blocks you don't want to be able to chunk load
 
-createaddition:block/accumulator
-createaddition:block/alternator
-createaddition:block/connector
-createaddition:block/digital_adapter
-createaddition:block/electric_motor
-createaddition:block/modular_accumulator
-createaddition:block/portable_energy_interface
-createaddition:block/redstone_relay
-createaddition:block/rolling_mill
-createaddition:block/tesla_coil
+createaddition:accumulator
+createaddition:alternator
+createaddition:connector
+createaddition:digital_adapter
+createaddition:electric_motor
+createaddition:modular_accumulator
+createaddition:portable_energy_interface
+createaddition:redstone_relay
+createaddition:rolling_mill
+createaddition:tesla_coil

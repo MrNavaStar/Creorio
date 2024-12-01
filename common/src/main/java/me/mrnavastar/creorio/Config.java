@@ -63,6 +63,8 @@ public class Config {
                             String[] parts = line.split(":");
                             if (Platform.getOptionalMod(parts[0]).isEmpty()) return;
 
+                            System.out.println(parts[1]);
+
                             ArrayList<String> list = whitelist.getOrDefault(parts[0], new ArrayList<>());
                             list.add(parts[1]);
                             whitelist.put(parts[0], list);

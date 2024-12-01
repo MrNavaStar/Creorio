@@ -1,18 +1,18 @@
 # Use comments to disable any blocks you don't want to be able to chunk load
 
-createdeco:block/black_shipping_container
-createdeco:block/blue_shipping_container
-createdeco:block/brown_shipping_container
-createdeco:block/cyan_shipping_container
-createdeco:block/gray_shipping_container
-createdeco:block/green_shipping_container
-createdeco:block/light_blue_shipping_container
-createdeco:block/light_gray_shipping_container
-createdeco:block/lime_shipping_container
-createdeco:block/magenta_shipping_container
-createdeco:block/orange_shipping_container
-createdeco:block/pink_shipping_container
-createdeco:block/purple_shipping_container
-createdeco:block/red_shipping_container
-createdeco:block/white_shipping_container
-createdeco:block/yellow_shipping_container
+createdeco:black_shipping_container
+createdeco:blue_shipping_container
+createdeco:brown_shipping_container
+createdeco:cyan_shipping_container
+createdeco:gray_shipping_container
+createdeco:green_shipping_container
+createdeco:light_blue_shipping_container
+createdeco:light_gray_shipping_container
+createdeco:lime_shipping_container
+createdeco:magenta_shipping_container
+createdeco:orange_shipping_container
+createdeco:pink_shipping_container
+createdeco:purple_shipping_container
+createdeco:red_shipping_container
+createdeco:white_shipping_container
+createdeco:yellow_shipping_container

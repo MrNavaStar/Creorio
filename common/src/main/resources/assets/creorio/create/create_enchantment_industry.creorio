@@ -1,5 +1,5 @@
 # Use comments to disable any blocks you don't want to be able to chunk load
 
-create_enchantment_industry:block/disenchanter
-create_enchantment_industry:block/blaze_enchanter
-create_enchantment_industry:block/printer
+create_enchantment_industry:disenchanter
+create_enchantment_industry:blaze_enchanter
+create_enchantment_industry:printer
