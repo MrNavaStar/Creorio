@@ -1,7 +1,7 @@
 package me.mrnavastar.creorio.mixin;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import me.mrnavastar.creorio.Creorio;
+import me.mrnavastar.creorio.server.Creorio;
 import me.mrnavastar.creorio.access.IChunkTicketManager;
 import net.minecraft.server.world.ChunkTicket;
 import net.minecraft.server.world.ChunkTicketManager;

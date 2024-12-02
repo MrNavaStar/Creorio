@@ -1,13 +1,15 @@
-package me.mrnavastar.creorio;
+package me.mrnavastar.creorio.server;
 
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.*;
+import dev.architectury.networking.NetworkChannel;
 import me.mrnavastar.creorio.access.IChunkTicketManager;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.server.world.ChunkTicketType;
 import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.ForcedChunkState;
 import net.minecraft.world.chunk.Chunk;
@@ -18,7 +20,7 @@ import java.util.concurrent.*;
 
 public final class Creorio {
 
-    private record ChunkChange(ServerWorld world, ChunkPos pos, Boolean state) {
+    private record ChunkChange(ServerWorld world, ChunkPos pos, boolean state) {
 
         @NotThreadSafe
         public void apply() {
@@ -35,8 +37,9 @@ public final class Creorio {
         }
     }
 
+    public static final NetworkChannel CHANNEL = NetworkChannel.create(new Identifier("creorio", "chunks"));
     public static final ChunkTicketType<ChunkPos> TICKET = ChunkTicketType.create("creorio", (a, b) -> 0);
-    private static final ExecutorService exec = Executors.newVirtualThreadPerTaskExecutor();
+    private static final ExecutorService exec = Executors.newFixedThreadPool(5);
     private static final ConcurrentLinkedQueue<ChunkChange> chunkChanges = new ConcurrentLinkedQueue<>();
 
     @NotThreadSafe
@@ -50,13 +53,15 @@ public final class Creorio {
     }
 
     @ThreadSafe
-    private static void purge(Chunk chunk, ServerWorld world, NbtCompound nbt) {
+    private static void clean(Chunk chunk, ServerWorld world, NbtCompound nbt) {
         exec.submit(() -> {
             // Scan chunk data for any whitelisted blocks, return early if one is found
             for (NbtElement section : nbt.getList("sections", NbtElement.COMPOUND_TYPE))
                 for (NbtElement block : ((NbtCompound) section).getCompound("block_states").getList("palette", NbtElement.COMPOUND_TYPE))
-                    if (Config.isWhitelisted(((NbtCompound) block).getString("Name"))) return;
-
+                    if (Config.isWhitelisted(((NbtCompound) block).getString("Name"))) {
+                        setForced(world, chunk.getPos(), true);
+                        return;
+                    }
             setForced(world, chunk.getPos(), false);
         });
     }
@@ -76,7 +81,9 @@ public final class Creorio {
         });
 
         // Purge any force loaded chunks that no longer have whitelist blocks inside them
-        ChunkEvent.SAVE_DATA.register(Creorio::purge);
+        ChunkEvent.SAVE_DATA.register(Creorio::clean);
+        // Allow for importing of worlds that have existing whitelisted blocks
+        ChunkEvent.LOAD_DATA.register(Creorio::clean);
         // Load all the chunks that have whitelisted blocks in them
         LifecycleEvent.SERVER_LEVEL_LOAD.register(world -> getCreorioStorage(world).getChunks().forEach(pos -> setForced(world, new ChunkPos(pos), true)));
 

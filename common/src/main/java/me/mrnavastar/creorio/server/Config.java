@@ -1,4 +1,4 @@
-package me.mrnavastar.creorio;
+package me.mrnavastar.creorio.server;
 
 import dev.architectury.platform.Platform;
 import lombok.SneakyThrows;
