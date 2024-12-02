@@ -28,7 +28,10 @@ public final class Creorio {
             ForcedChunkState storage = getCreorioStorage(world);
             if (state) {
                 manager.addTicket(TICKET, pos, 2, pos);
-                if (storage.getChunks().add(pos.toLong())) storage.markDirty();
+                if (storage.getChunks().add(pos.toLong())) {
+                    storage.markDirty();
+                    InspectionManager.updatePlayers(world, pos);
+                }
             }
             else if (((IChunkTicketManager) manager.threadedAnvilChunkStorage.getTicketManager()).creorio$isLoadedByCreorio(pos.toLong())){
                 manager.removeTicket(TICKET, pos, 2, pos);
@@ -68,6 +71,7 @@ public final class Creorio {
 
     public static void init() {
         Config.load();
+        InspectionManager.init();
         CommandRegistrationEvent.EVENT.register(CreorioCommand::init);
 
         // TODO: Check if this event fires twice on a server like it does on a client

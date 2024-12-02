@@ -4,6 +4,7 @@
   "package": "me.mrnavastar.creorio.client.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
+    "ClientChunkManagerMixin",
     "DebugRendererMixin"
   ],
   "injectors": {
