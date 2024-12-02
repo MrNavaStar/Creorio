@@ -21,24 +21,29 @@ public class CreorioChunkUpdateS2C {
 
     private final RegistryKey<World> world;
     private final ChunkPos pos;
+    private final boolean state;
 
     public CreorioChunkUpdateS2C(PacketByteBuf buf) {
         world = buf.readRegistryKey(RegistryKeys.WORLD);
         pos = buf.readChunkPos();
+        state = buf.readBoolean();
     }
 
-    public CreorioChunkUpdateS2C(RegistryKey<World> world, ChunkPos pos) {
+    public CreorioChunkUpdateS2C(RegistryKey<World> world, ChunkPos pos, boolean state) {
         this.world = world;
         this.pos = pos;
+        this.state = state;
     }
 
     public void encode(PacketByteBuf buf) {
         buf.writeRegistryKey(world);
         buf.writeChunkPos(pos);
+        buf.writeBoolean(state);
     }
 
     public void apply(Supplier<NetworkManager.PacketContext> ctx) {
         if (Platform.getEnv().equals(EnvType.SERVER)) return;
-        CreorioClient.getChunks(world).add(pos);
+        if (state) CreorioClient.getChunks(world).add(pos);
+        else CreorioClient.getChunks(world).remove(pos);
     }
 }

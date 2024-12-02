@@ -30,12 +30,15 @@ public final class Creorio {
                 manager.addTicket(TICKET, pos, 2, pos);
                 if (storage.getChunks().add(pos.toLong())) {
                     storage.markDirty();
-                    InspectionManager.updatePlayers(world, pos);
+                    InspectionManager.updatePlayers(world, pos, true);
                 }
             }
             else if (((IChunkTicketManager) manager.threadedAnvilChunkStorage.getTicketManager()).creorio$isLoadedByCreorio(pos.toLong())){
                 manager.removeTicket(TICKET, pos, 2, pos);
-                if (storage.getChunks().remove(pos.toLong())) storage.markDirty();
+                if (storage.getChunks().remove(pos.toLong())) {
+                    storage.markDirty();
+                    InspectionManager.updatePlayers(world, pos, false);
+                }
             }
         }
     }

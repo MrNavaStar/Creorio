@@ -36,6 +36,6 @@ public abstract class ThreadedAnvilChunkStorageMixin {
     @Inject(method = "sendChunkDataPackets", at = @At("TAIL"))
     private void sendCreorioUpdates(ServerPlayerEntity player, MutableObject<ChunkDataS2CPacket> cachedDataPacket, WorldChunk chunk, CallbackInfo ci) {
         if (!Creorio.getCreorioStorage(world).getChunks().contains(chunk.getPos().toLong())) return;
-        Creorio.CHANNEL.sendToPlayer(player, new CreorioChunkUpdateS2C(world.getRegistryKey(), chunk.getPos()));
+        Creorio.CHANNEL.sendToPlayer(player, new CreorioChunkUpdateS2C(world.getRegistryKey(), chunk.getPos(), true));
     }
 }

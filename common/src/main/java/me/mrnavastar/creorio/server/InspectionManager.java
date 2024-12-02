@@ -25,11 +25,11 @@ public class InspectionManager {
                 .forEach(pos -> Creorio.CHANNEL.sendToPlayer(player, new CreorioChunkUpdateS2C(player.getServerWorld().getRegistryKey(), new ChunkPos(pos))));
     }*/
 
-    public static void updatePlayers(ServerWorld world, ChunkPos pos) {
+    public static void updatePlayers(ServerWorld world, ChunkPos pos, boolean state) {
         HashSet<ServerPlayerEntity> watching = new HashSet<>();
         watching.addAll(world.getChunkManager().threadedAnvilChunkStorage.getPlayersWatchingChunk(pos));
         watching.addAll(getOps(world.getServer()));
-        watching.forEach(player -> Creorio.CHANNEL.sendToPlayer(player, new CreorioChunkUpdateS2C(world.getRegistryKey(), pos)));
+        watching.forEach(player -> Creorio.CHANNEL.sendToPlayer(player, new CreorioChunkUpdateS2C(world.getRegistryKey(), pos, state)));
     }
 
     public static void init() {
