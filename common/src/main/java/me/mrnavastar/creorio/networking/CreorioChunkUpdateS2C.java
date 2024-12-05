@@ -15,7 +15,7 @@ import java.util.function.Supplier;
 
 public class CreorioChunkUpdateS2C {
 
-    static {
+    public static void register() {
         Creorio.CHANNEL.register(CreorioChunkUpdateS2C.class, CreorioChunkUpdateS2C::encode, CreorioChunkUpdateS2C::new, CreorioChunkUpdateS2C::apply);
     }
 

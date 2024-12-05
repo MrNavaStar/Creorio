@@ -17,10 +17,10 @@ public class CreorioChunkDebugRenderer implements DebugRenderer.Renderer {
     private static final float b = 150;
     private static final float a = 0.5F;
 
-    private boolean enabled = false;
+    private static boolean enabled = false;
 
-    public CreorioChunkDebugRenderer() {
-        ClientTickEvent.CLIENT_POST.register(minecraft -> {
+    static {
+        ClientTickEvent.CLIENT_POST.register(client -> {
             if (CreorioClient.DEBUG_KEY.wasPressed()) enabled = !enabled;
         });
     }

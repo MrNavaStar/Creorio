@@ -4,6 +4,7 @@ import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.*;
 import dev.architectury.networking.NetworkChannel;
 import me.mrnavastar.creorio.access.IChunkTicketManager;
+import me.mrnavastar.creorio.networking.CreorioChunkUpdateS2C;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.server.world.ChunkTicketType;
@@ -73,6 +74,7 @@ public final class Creorio {
     }
 
     public static void init() {
+        CreorioChunkUpdateS2C.register();
         Config.load();
         InspectionManager.init();
         CommandRegistrationEvent.EVENT.register(CreorioCommand::init);
