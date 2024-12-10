@@ -19,6 +19,7 @@
     ]
   },
   "mixins": ["creorio.mixins.json", "creorio.client.mixins.json"],
+  "accessWidener": "creorio.accesswidener",
   "depends": {
     "minecraft": ">=1.20.1",
     "java": ">=17",

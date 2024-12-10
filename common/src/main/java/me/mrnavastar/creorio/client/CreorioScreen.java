@@ -5,10 +5,9 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.ChunkPos;
 
 public class CreorioScreen extends Screen {
-
-    private final MinecraftClient client = MinecraftClient.getInstance();
 
     public static void setup() {
         ClientTickEvent.CLIENT_POST.register(client -> {
@@ -22,8 +21,9 @@ public class CreorioScreen extends Screen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        super.render(context, mouseX, mouseY, delta);
 
-        this.renderBackground(context);
+        //this.renderBackground(context);
+
+        ChunkRenderer.render(context.getMatrices(), new ChunkPos(0, 0));
     }
 }

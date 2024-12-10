@@ -8,7 +8,6 @@ import me.mrnavastar.creorio.networking.CreorioChunkUpdateS2C;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.server.world.ChunkTicketType;
-import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ChunkPos;
@@ -25,17 +24,16 @@ public final class Creorio {
 
         @NotThreadSafe
         public void apply() {
-            ServerChunkManager manager = world.getChunkManager();
             ForcedChunkState storage = getCreorioStorage(world);
             if (state) {
-                manager.addTicket(TICKET, pos, 2, pos);
+                world.getChunkManager().addTicket(TICKET, pos, 2, pos);
                 if (storage.getChunks().add(pos.toLong())) {
                     storage.markDirty();
                     InspectionManager.updatePlayers(world, pos, true);
                 }
             }
-            else if (((IChunkTicketManager) manager.threadedAnvilChunkStorage.getTicketManager()).creorio$isLoadedByCreorio(pos.toLong())){
-                manager.removeTicket(TICKET, pos, 2, pos);
+            else if (isLoadedByCreorio(world, pos)){
+                world.getChunkManager().removeTicket(TICKET, pos, 2, pos);
                 if (storage.getChunks().remove(pos.toLong())) {
                     storage.markDirty();
                     InspectionManager.updatePlayers(world, pos, false);
@@ -52,6 +50,11 @@ public final class Creorio {
     @NotThreadSafe
     public static ForcedChunkState getCreorioStorage(ServerWorld world) {
         return world.getPersistentStateManager().getOrCreate(ForcedChunkState::fromNbt, ForcedChunkState::new, "creorio");
+    }
+
+    @NotThreadSafe
+    public static boolean isLoadedByCreorio(ServerWorld world, ChunkPos pos) {
+        return (((IChunkTicketManager) world.getChunkManager().threadedAnvilChunkStorage.getTicketManager()).creorio$isLoadedByCreorio(pos.toLong()));
     }
 
     @ThreadSafe

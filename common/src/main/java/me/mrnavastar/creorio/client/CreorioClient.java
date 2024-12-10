@@ -1,9 +1,9 @@
 package me.mrnavastar.creorio.client;
 
 import com.google.common.collect.Sets;
+import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.registry.client.keymappings.KeyMappingRegistry;
 import lombok.Getter;
-import me.mrnavastar.creorio.networking.CreorioChunkUpdateS2C;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.registry.RegistryKey;
@@ -31,5 +31,9 @@ public class CreorioClient {
         KeyMappingRegistry.register(DEBUG_KEY);
 
         CreorioScreen.setup();
+
+        ClientGuiEvent.RENDER_HUD.register((graphics, tickDelta) -> {
+            ChunkRenderer.render(graphics.getMatrices(), new ChunkPos(0, 0));
+        });
     }
 }

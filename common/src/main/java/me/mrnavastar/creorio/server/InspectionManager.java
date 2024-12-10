@@ -1,6 +1,5 @@
 package me.mrnavastar.creorio.server;
 
-import dev.architectury.event.events.common.PlayerEvent;
 import me.mrnavastar.creorio.networking.CreorioChunkUpdateS2C;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
@@ -33,6 +32,7 @@ public class InspectionManager {
     }
 
     public static void init() {
+
         //PlayerEvent.PLAYER_JOIN.register(InspectionManager::updatePlayer);
     }
 }

@@ -6,7 +6,8 @@
   "mixins": [
     "ChunkTicketManagerMixin",
     "ServerWorldMixin",
-    "ThreadedAnvilChunkStorageMixin"
+    "ThreadedAnvilChunkStorageMixin",
+    "ThreadedAnvilChunkStorageMixin$EntityTrackerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
