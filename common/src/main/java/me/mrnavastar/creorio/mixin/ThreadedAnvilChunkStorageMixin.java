@@ -34,7 +34,7 @@ public abstract class ThreadedAnvilChunkStorageMixin {
 
         @ModifyVariable(method = "updateTrackedStatus(Lnet/minecraft/server/network/ServerPlayerEntity;)V", at = @At(value = "STORE", ordinal = 0))
         private boolean updateCreorioPlayers(boolean b) {
-            return Creorio.isLoadedByCreorio((ServerWorld) entity.getWorld(), entity.getChunkPos());
+            return b || Creorio.isLoadedByCreorio((ServerWorld) entity.getWorld(), entity.getChunkPos());
         }
     }
 
